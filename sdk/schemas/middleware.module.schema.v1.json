@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CAPI middleware module.yml",
+  "description": "A middleware module: a library built on the HAL interfaces, or on none. Extends module.base.schema.v1.json. Generated from capi/module.yml's catalogs -- do not hand-edit, run generate_module_schema.py instead.",
+  "$ref": "module.base.schema.v1.json",
+  "required": [
+    "capi_version_requirement"
+  ],
+  "properties": {
+    "type": {
+      "const": "middleware"
+    },
+    "depends": {
+      "$ref": "module.base.schema.v1.json#/$defs/depends"
+    },
+    "provides": {
+      "$ref": "module.base.schema.v1.json#/$defs/provides"
+    }
+  },
+  "unevaluatedProperties": false
+}

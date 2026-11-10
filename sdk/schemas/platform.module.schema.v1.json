@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CAPI platform module.yml",
+  "description": "A platform module: a platform backend. Extends module.base.schema.v1.json. Generated from capi/module.yml's catalogs -- do not hand-edit, run generate_module_schema.py instead.",
+  "$ref": "module.base.schema.v1.json",
+  "required": [
+    "capi_version_requirement"
+  ],
+  "properties": {
+    "type": {
+      "const": "platform"
+    },
+    "depends": {
+      "$ref": "module.base.schema.v1.json#/$defs/package_depends"
+    },
+    "provides": {
+      "$ref": "module.base.schema.v1.json#/$defs/provides"
+    },
+    "build": {
+      "$ref": "module.base.schema.v1.json#/$defs/build"
+    }
+  },
+  "unevaluatedProperties": false
+}

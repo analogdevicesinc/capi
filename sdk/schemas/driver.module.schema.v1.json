@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CAPI driver module.yml",
+  "description": "A driver module: the driver for one device, or one family of devices. Extends module.base.schema.v1.json. Generated from capi/module.yml's catalogs -- do not hand-edit, run generate_module_schema.py instead.",
+  "$ref": "module.base.schema.v1.json",
+  "required": [
+    "capi_version_requirement"
+  ],
+  "properties": {
+    "type": {
+      "const": "driver"
+    },
+    "kconfig": {
+      "$ref": "module.base.schema.v1.json#/$defs/kconfig"
+    },
+    "depends": {
+      "$ref": "module.base.schema.v1.json#/$defs/depends"
+    },
+    "provides": {
+      "$ref": "module.base.schema.v1.json#/$defs/provides"
+    }
+  },
+  "unevaluatedProperties": false
+}

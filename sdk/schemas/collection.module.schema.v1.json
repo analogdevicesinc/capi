@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CAPI collection module.yml",
+  "description": "A collection module: several modules of any types kept in one repository, each with its own module.yml. Extends module.base.schema.v1.json. Generated from capi/module.yml's catalogs -- do not hand-edit, run generate_module_schema.py instead.",
+  "$ref": "module.base.schema.v1.json",
+  "required": [
+    "modules",
+    "capi_version_requirement"
+  ],
+  "properties": {
+    "type": {
+      "const": "collection"
+    },
+    "modules": {
+      "$ref": "module.base.schema.v1.json#/$defs/modules"
+    },
+    "depends": {
+      "$ref": "module.base.schema.v1.json#/$defs/package_depends"
+    },
+    "provides": {
+      "$ref": "module.base.schema.v1.json#/$defs/no_provides"
+    }
+  },
+  "unevaluatedProperties": false
+}

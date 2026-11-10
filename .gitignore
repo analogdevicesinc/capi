@@ -1,0 +1,7 @@
+build/
+build-*/
+*.o
+*.d
+*.a
+__pycache__/
+.capi_venv/

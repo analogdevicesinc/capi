@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CAPI application module.yml",
+  "description": "A application module: an end product; the only type that selects a platform. Extends module.base.schema.v1.json. Generated from capi/module.yml's catalogs -- do not hand-edit, run generate_module_schema.py instead.",
+  "$ref": "module.base.schema.v1.json",
+  "required": [
+    "capi_version_requirement"
+  ],
+  "properties": {
+    "type": {
+      "const": "application"
+    },
+    "boards": {
+      "$ref": "module.base.schema.v1.json#/$defs/boards"
+    },
+    "depends": {
+      "$ref": "module.base.schema.v1.json#/$defs/application_depends"
+    }
+  },
+  "unevaluatedProperties": false
+}

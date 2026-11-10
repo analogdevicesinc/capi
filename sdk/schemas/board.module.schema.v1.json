@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CAPI board module.yml",
+  "description": "A board module: a board: one carrying an MCU, or one core of it, that a build targets, or an add-on board that plugs into one. Extends module.base.schema.v1.json. Generated from capi/module.yml's catalogs -- do not hand-edit, run generate_module_schema.py instead.",
+  "$ref": "module.base.schema.v1.json",
+  "required": [
+    "role",
+    "capi_version_requirement"
+  ],
+  "properties": {
+    "type": {
+      "const": "board"
+    },
+    "role": {
+      "$ref": "module.base.schema.v1.json#/$defs/board_role"
+    }
+  },
+  "unevaluatedProperties": false
+}

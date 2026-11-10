@@ -1,0 +1,345 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CAPI module.yml: common base",
+  "description": "What every module.yml carries, whatever its type. Not used on its own: a module.yml references the <type>.module.schema.v1.json for its type, which extends this one. Generated from capi/module.yml's catalogs -- do not hand-edit, run generate_module_schema.py instead.",
+  "type": "object",
+  "required": [
+    "name",
+    "type",
+    "version"
+  ],
+  "properties": {
+    "name": {
+      "$ref": "#/$defs/name"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "application",
+        "board",
+        "collection",
+        "driver",
+        "interface",
+        "middleware",
+        "platform",
+        "utility"
+      ]
+    },
+    "version": {
+      "$ref": "#/$defs/version",
+      "description": "This module's own version, X.Y.Z. Every module.yml must have one."
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "capi_version_requirement": {
+      "type": "string",
+      "pattern": "^(?:(>=|<=|=|>|<)\\d+\\.\\d+\\.\\d+|(>=|>)\\d+\\.\\d+\\.\\d+,(<=|<)\\d+\\.\\d+\\.\\d+)$",
+      "description": "The capi version this module is written against, as a version constraint: one of >=, <=, =, > or < followed by X.Y.Z, so \">=1.0.0\" or \"=1.0.0\" to pin one version, or a range like \">1.0.1,<1.2.3\". It names which capi, not whether capi is needed, so it is never a boolean or a bare version."
+    },
+    "repo_refs": {
+      "type": "object",
+      "description": "Repositories named once, referenced by name from depends entries (repo:).",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "git"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "git": {
+            "type": "string"
+          },
+          "checkout": {
+            "$ref": "#/$defs/checkout"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "constraint": {
+      "type": "string",
+      "pattern": "^(?:(>=|<=|=|>|<)\\d+\\.\\d+\\.\\d+|(>=|>)\\d+\\.\\d+\\.\\d+,(<=|<)\\d+\\.\\d+\\.\\d+)$",
+      "description": "A version constraint: (>=|<=|=|>|<)X.Y.Z, or a range (>|>=)X.Y.Z,(<|<=)X.Y.Z such as >1.0.1,<1.2.3."
+    },
+    "interface": {
+      "type": "string",
+      "enum": [
+        "adc",
+        "alloc",
+        "can",
+        "clk",
+        "coprocessor",
+        "dac",
+        "dma",
+        "eth_mac",
+        "eth_phy",
+        "gpio",
+        "i2c",
+        "i2s",
+        "i3c",
+        "io",
+        "irq",
+        "log",
+        "mailbox",
+        "mdio",
+        "mutex",
+        "pinctrl",
+        "platform",
+        "regulator",
+        "rtc",
+        "sem",
+        "spi",
+        "time",
+        "timer",
+        "uart",
+        "wdt"
+      ]
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^(?!\\.$)(?!.*\\.\\.)[^/\\\\\\\";\\s]+$",
+      "description": "A name, not a location: not '.', and no '/', '\\', '..', '\"', ';' or whitespace. Locations go in path:."
+    },
+    "interfaces": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/interface"
+      }
+    },
+    "checkout": {
+      "type": "string",
+      "pattern": "^(?!-)[^\\s\\\";]+$",
+      "description": "A branch, tag or commit, whatever git checkout accepts. If a name could mean more than one thing, git's own rules decide. Never starts with '-', which git would read as an option, and never contains whitespace, '\"' or ';'."
+    },
+    "entry": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "$ref": "#/$defs/constraint",
+          "description": "Constraint on the package's own module.yml version."
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^(?!/(?!/))(?![A-Za-z]:)[^\\\\\\\";\\n]+$",
+          "description": "Where the package is, or, with git:, where it is cloned. //<dir> is relative to CAPI_WORKSPACE, any other path to this module.yml's directory. The resolver refuses a path that leaves whichever of the two it is relative to, so reach a package outside this module with //<dir>, not with '..'. Never absolute (no leading '/', drive letter or backslash), and never contains '\"', ';' or a newline."
+        },
+        "git": {
+          "type": "string",
+          "description": "Repository URL, if it can be fetched."
+        },
+        "checkout": {
+          "$ref": "#/$defs/checkout",
+          "description": "What to check out after cloning; needs git:."
+        },
+        "subdir": {
+          "type": "string",
+          "pattern": "^(?!/)(?![A-Za-z]:)(?!(.*/)?\\.\\.(/|$))[^\\\\\\\";\\n]+$",
+          "description": "Location of the package inside its repository; relative, without '..', and never contains '\"', ';' or a newline."
+        },
+        "repo": {
+          "type": "string",
+          "description": "Name of an entry in this module's repo_refs:."
+        }
+      },
+      "dependentSchemas": {
+        "repo": {
+          "not": {
+            "anyOf": [
+              {
+                "required": [
+                  "git"
+                ]
+              },
+              {
+                "required": [
+                  "checkout"
+                ]
+              }
+            ]
+          },
+          "description": "repo: names an entry in this module's repo_refs:, which already carries the git URL and what to check out. Set git: and checkout: there, not here."
+        },
+        "subdir": {
+          "anyOf": [
+            {
+              "required": [
+                "git"
+              ]
+            },
+            {
+              "required": [
+                "repo"
+              ]
+            }
+          ],
+          "description": "subdir: locates the package inside a repository, so it needs one: either git: or repo:."
+        },
+        "checkout": {
+          "required": [
+            "git"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "entry_value": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/constraint"
+        },
+        {
+          "$ref": "#/$defs/entry"
+        }
+      ]
+    },
+    "package": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/name",
+          "description": "Bare package name, found at //<name>."
+        },
+        {
+          "type": "object",
+          "minProperties": 1,
+          "maxProperties": 1,
+          "propertyNames": {
+            "$ref": "#/$defs/name"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/entry_value"
+          }
+        }
+      ]
+    },
+    "depends_fields": {
+      "type": "object",
+      "properties": {
+        "packages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/package"
+          }
+        },
+        "interfaces": {
+          "$ref": "#/$defs/interfaces",
+          "description": "Interfaces this module REQUIRES. Every declared target must provide them."
+        }
+      }
+    },
+    "application_depends": {
+      "$ref": "#/$defs/depends_fields",
+      "properties": {
+        "platform": {
+          "type": "object",
+          "description": "Keyed by the preset's PLATFORM value; one entry is chosen per build. The package is capi-<key>.",
+          "propertyNames": {
+            "$ref": "#/$defs/name"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/entry_value"
+          }
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "depends": {
+      "$ref": "#/$defs/depends_fields",
+      "unevaluatedProperties": false
+    },
+    "package_depends": {
+      "$ref": "#/$defs/depends_fields",
+      "properties": {
+        "interfaces": {
+          "not": {},
+          "description": "Required by the modules built from this one, not by it."
+        }
+      },
+      "unevaluatedProperties": false
+    },
+    "provides": {
+      "type": "object",
+      "properties": {
+        "interfaces": {
+          "$ref": "#/$defs/interfaces"
+        }
+      },
+      "additionalProperties": false
+    },
+    "build": {
+      "type": "object",
+      "properties": {
+        "cmake": {
+          "type": "object",
+          "properties": {
+            "toolchain": {
+              "type": "string",
+              "pattern": "^(?!/)(?![A-Za-z]:)(?!(.*/)?\\.\\.(/|$))[^\\\\\\\";\\n]+\\.cmake$",
+              "description": "A CMake toolchain file, relative to this module.yml's directory and ending in .cmake. It becomes CMAKE_TOOLCHAIN_FILE, set before project() runs, so it is what selects the compiler."
+            },
+            "vendor_sdk": {
+              "type": "string",
+              "pattern": "^(?!/)(?![A-Za-z]:)(?!(.*/)?\\.\\.(/|$))[^\\\\\\\";\\n]+\\.cmake$",
+              "description": "A CMake file that wires up the vendor SDK (MSDK, STM32Cube, ...), relative to this module.yml's directory and ending in .cmake. It must define capi_<platform>_config_sdk(TARGET): capi_create_application() include()s the file and then calls that function."
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "kconfig": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_]*$",
+      "description": "The Kconfig symbol that builds this driver. Its depends.interfaces apply to a target only where it is enabled."
+    },
+    "no_provides": {
+      "not": {},
+      "description": "Provides no interfaces: each module a collection holds has its own module.yml, which is where it says what it provides."
+    },
+    "boards": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      },
+      "description": "The boards this app has presets for, and the targets its interfaces are checked on."
+    },
+    "modules": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^(?!/)(?![A-Za-z]:)(?!(.*/)?\\.\\.(/|$))[^\\\\\\\";\\n]+$",
+        "description": "A directory relative to this module.yml, without '..'."
+      },
+      "description": "The directories of the modules this collection holds, relative to this module.yml and without '..'. Each has its own module.yml."
+    },
+    "board_role": {
+      "type": "string",
+      "enum": [
+        "host",
+        "addon"
+      ],
+      "description": "host: a board carrying the MCU a build targets, boards/<board>/ in a platform package, or one core of it. addon: a board that plugs into a host board through one of its connectors."
+    },
+    "catalog": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

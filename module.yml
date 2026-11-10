@@ -1,0 +1,69 @@
+# yaml-language-server: $schema=sdk/schemas/interface.module.schema.v1.json
+#
+# capi's own module.yml: its identity, and the catalogs every other
+# module.yml is checked against. sdk/tools/generate_module_schema.py turns
+# these lists into the enums of sdk/schemas/*.schema.v1.json; regenerate
+# the schemas after editing any list here.
+name: capi
+type: interface
+version: "0.9.0"
+description: "Common API (CAPI) -- portable hardware abstraction layer"
+
+# The value of `type:` in a module.yml. Each type has its own schema,
+# sdk/schemas/<type>.module.schema.v1.json, listing the fields it may carry.
+module_types:
+  - application         # a buildable end product; the only type that selects a platform
+  - board               # a board; `role:` says which: one carrying the MCU a build
+                        # targets, boards/<board>/, or one core of it,
+                        # boards/<board>/<core>/ selected with
+                        # BOARD="<board>/<core>" (role: host), or a board that
+                        # plugs into one of its connectors (role: addon)
+  - collection          # several modules kept in one repository, of any types:
+                        # drivers, the apps that use them, the middleware that
+                        # ties them together. Each has its own module.yml.
+  - driver              # the driver for one device, or one family of devices
+  - interface           # capi itself: these catalogs
+  - middleware          # a library built on the HAL interfaces, or on none
+  - platform            # a platform backend
+  - utility             # a base library other packages build on
+
+# Interfaces a module may require (depends.interfaces) or provide
+# (provides.interfaces): one per inc/capi_<name>.h
+#
+# Each is a header whose functions some module implements, either as
+# ops-style handles (uart, spi, ...) or as plain functions a platform
+# supplies: `platform` (capi_platform_init(), clock and tick hooks) and
+# `log` (capi_log_prefix()).
+#
+# The `platform` interface is unrelated to the `platform` module type and
+# depends.platform, which select a platform package.
+interfaces:
+  - adc
+  - alloc
+  - can
+  - clk
+  - coprocessor
+  - dac
+  - dma
+  - eth_mac
+  - eth_phy
+  - gpio
+  - i2c
+  - i2s
+  - i3c
+  - io
+  - irq
+  - log
+  - mailbox
+  - mdio
+  - mutex
+  - pinctrl
+  - platform
+  - regulator
+  - rtc
+  - sem
+  - spi
+  - time
+  - timer
+  - uart
+  - wdt
